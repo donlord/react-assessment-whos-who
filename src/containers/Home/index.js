@@ -72,6 +72,10 @@ class Home extends React.Component {
   }
 
   handleSubmit = event => {
+    if (this.state.losersPicsUrl != []) {
+      this.state.losersPicsUrl = []
+    }
+
     event.preventDefault()
     let data = {
       songNums: this.state.songNums,
@@ -80,32 +84,23 @@ class Home extends React.Component {
       genres: this.state.genreInfo
     }
     this.props.setConfig(data)
-
-    // console.log(this.props.artists)
+    // choses random winner(1) and losers based on input
     this.state.winner = this.chooseRandom(this.props.artists, 1)
     this.state.losers = this.chooseRandom(
       this.props.artists,
       this.props.songNums - 1
     )
-    console.log(this.state.winner)
-    console.log(this.state.winner[0].images[0].url + 'winnerimage')
 
     this.state.winnerPicUrl = this.state.winner[0].images[0].url
-    console.log(this.state.winnerPicUrl)
+
+    // array of pictures of losers for image rendering
     for (let i = 0; i < this.state.losers.length; i++) {
       this.state.losersPicsUrl.push(this.state.losers[i].images[i].url)
       console.log(this.state.losersPicsUrl[i])
     }
 
-    console.log(this.state.winner[0].name + 'winner')
-
+    // load top tracks of winner
     this.props.loadTopTracks(this.state.winner[0].id)
-    // console.log(this.props.topTracks)
-
-    // console.log(this.state.winnerSong)
-    // console.log(this.props)
-    // this.state.winnerTopTrackInfo = this.chooseRandom(this.props.topTracks, 1)
-    // console.log(this.props.winnerTopTrackInfo)
     this.state.failed = true
   }
 
@@ -117,26 +112,24 @@ class Home extends React.Component {
   }
 
   render () {
-    // console.log(this.props.genreInfo)
     const categories = this.props.categories.map(category => (
       <option key={category} value={category}>
         {category}
       </option>
     ))
 
+    // maps urls of losers to images
+    let images = this.state.losersPicsUrl.map(image => {
+      return <img key={image} src={`${image}`} alt='' />
+    })
+
     return (
       <div>
-
-        {/* <form onSubmit={event => handleSubmit(event)}> */}
         <form onSubmit={this.handleSubmit}>
           <select
             name='category'
             onChange={event => {
               this.props.selectCategory(event.target.value)
-              //   console.log(event.target.value)
-              //   console.log(this.props.loadArtist('02kJSzxNuaWGqwubyUba0Z'))
-
-              //   console.log(this.props.selectCategory(event.target.value))
               this.state.category = event.target.value
               this.props.loadGenres(event.target.value)
             }}
@@ -148,20 +141,23 @@ class Home extends React.Component {
             Number of Songs:
             <input type='text' name='songNums' onChange={this.handleChange} />
           </label>
+
           <label>
             Number of Artists:
             <input type='text' name='artistNums' onChange={this.handleChange} />
           </label>
+
           <input type='submit' value='Submit' />
         </form>
 
-        {this.state.failed && <img src={this.state.losersPicsUrl[0]} />}
-        {this.state.failed && <img src={this.state.losersPicsUrl[1]} />}
-        {this.state.failed && <img src={this.state.losersPicsUrl[2]} />}
+        <div>
+          {images}
+        </div>
 
         {this.state.failed &&
           <img src={this.state.winnerPicUrl} onClick={this.handleWinner} />}
         <p>winner pic</p>
+
         {this.state.failed &&
           <ReactAudioPlayer
             src={this.props.topTracks[0].preview_url}
