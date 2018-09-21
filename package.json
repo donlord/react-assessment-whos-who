@@ -40,8 +40,10 @@
     "webpack-dev-server": "^3.1.8"
   },
   "dependencies": {
+    "howler": "^2.0.15",
     "lodash": "^4.17.11",
     "react": "^16.5.0",
+    "react-audio-player": "^0.10.0",
     "react-dom": "^16.5.0",
     "react-play-button": "^0.1.1",
     "react-redux": "^5.0.7",

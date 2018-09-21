@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import connect from 'react-redux/es/connect/connect'
+import ReactAudioPlayer from 'react-audio-player'
 
 import {
   loadCategories,
@@ -24,44 +25,45 @@ class Home extends React.Component {
       winnerTopTrackInfo: [],
       winnerSong: '',
       winnerPicUrl: [],
-      failed: false
+      failed: false,
+      winnerName: ''
     }
   }
-  //   chooseRandom = (array, numItems) => {
-  //     if (array === undefined) {
-  //       return []
-  //     }
-  //     if (array.length <= 2) {
-  //       return array
-  //     }
-  //     if (numItems > array.length || numItems === undefined) {
-  //       numItems = Math.floor(Math.random() * array.length)
-  //     }
-  //     let indexArray = []
-  //     // Fill indexArray with random indices
-  //     while (indexArray.length != numItems) {
-  //       let randInt = Math.floor(Math.random() * array.length)
-  //       if (indexArray.length === 0) {
-  //         indexArray.push(randInt)
-  //       }
-  //       let inArray = false
-  //       // check to see if randomInt is in the indexed array, if so continue else add it to the indexArray
-  //       for (let i = 0; i < indexArray.length; i++) {
-  //         if (indexArray[i] === randInt) {
-  //           inArray = true
-  //         }
-  //       }
-  //       if (inArray == false) {
-  //         indexArray.push(randInt)
-  //       }
-  //     }
-  //     // return the new array with the random values from indices indicated in indexArray
-  //     let filteredArray = []
-  //     for (let i = 0; i < indexArray.length; i++) {
-  //       filteredArray.push(array[indexArray[i]])
-  //     }
-  //     return filteredArray
-  //   }
+  chooseRandom = (array, numItems) => {
+    if (array === undefined) {
+      return []
+    }
+    if (array.length <= 2) {
+      return array
+    }
+    if (numItems > array.length || numItems === undefined) {
+      numItems = Math.floor(Math.random() * array.length)
+    }
+    let indexArray = []
+    // Fill indexArray with random indices
+    while (indexArray.length != numItems) {
+      let randInt = Math.floor(Math.random() * array.length)
+      if (indexArray.length === 0) {
+        indexArray.push(randInt)
+      }
+      let inArray = false
+      // check to see if randomInt is in the indexed array, if so continue else add it to the indexArray
+      for (let i = 0; i < indexArray.length; i++) {
+        if (indexArray[i] === randInt) {
+          inArray = true
+        }
+      }
+      if (inArray == false) {
+        indexArray.push(randInt)
+      }
+    }
+    // return the new array with the random values from indices indicated in indexArray
+    let filteredArray = []
+    for (let i = 0; i < indexArray.length; i++) {
+      filteredArray.push(array[indexArray[i]])
+    }
+    return filteredArray
+  }
 
   handleChange = event => {
     let state = {}
@@ -85,6 +87,7 @@ class Home extends React.Component {
       this.props.artists,
       this.props.songNums - 1
     )
+    console.log(this.state.winner)
     console.log(this.state.winner[0].images[0].url + 'winnerimage')
 
     this.state.winnerPicUrl = this.state.winner[0].images[0].url
@@ -98,7 +101,7 @@ class Home extends React.Component {
 
     this.props.loadTopTracks(this.state.winner[0].id)
     // console.log(this.props.topTracks)
-    this.state.winnerSong = this.props.topTracks[0].preview_url
+
     // console.log(this.state.winnerSong)
     // console.log(this.props)
     // this.state.winnerTopTrackInfo = this.chooseRandom(this.props.topTracks, 1)
@@ -159,6 +162,12 @@ class Home extends React.Component {
         {this.state.failed &&
           <img src={this.state.winnerPicUrl} onClick={this.handleWinner} />}
         <p>winner pic</p>
+        {this.state.failed &&
+          <ReactAudioPlayer
+            src={this.props.topTracks[0].preview_url}
+            autoPlay={false}
+            controls
+          />}
       </div>
     )
   }
