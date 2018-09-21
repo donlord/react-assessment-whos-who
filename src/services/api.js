@@ -13,6 +13,23 @@ export function fetchCategories () {
     }
   })
 }
+export function fetchTopTracks (artistID) {
+  return fetchFromSpotify({
+    endpoint: `artists/${artistID}/top-tracks?country=US`
+  })
+}
+export function fetchGenres (genre) {
+  return fetchFromSpotify({
+    endpoint: `search?q=genre%3A${genre}&type=artist`
+  })
+}
+
+export function fetchArtist (data) {
+  // let artistId = data.id.slice(32)
+  return fetchFromSpotify({
+    endpoint: `artists/${data}`
+  })
+}
 
 export function fetchFromSpotify ({ endpoint, params }) {
   const spotifyToken = getAccessTokenFromLocalStorage()
@@ -23,6 +40,6 @@ export function fetchFromSpotify ({ endpoint, params }) {
     url += `?${paramString}`
   }
 
-  const options = { headers: { 'Authorization': `Bearer ${spotifyToken}` } }
+  const options = { headers: { Authorization: `Bearer ${spotifyToken}` } }
   return request(url, options)
 }
